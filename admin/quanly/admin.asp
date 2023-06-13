@@ -110,7 +110,7 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
-            <a href="?page=management"class="nav-link">Quản lý Sản Phẩm</a>
+            <a href="?page=managementProduct"class="nav-link">Quản lý Sản Phẩm</a>
           </li>
           <li class="nav-item">
             <a href="?page=cuong"class="nav-link">Quản lý Loại Sản Phẩm</a>
@@ -138,13 +138,15 @@ End If
 Select Case page
     Case ""
        Response.Write(Session("thumbnail"))
-    Case "management"
+    Case "managementProduct"
         action = Request.QueryString("action")
         Select Case action
             Case ""
                 Server.Execute("table_of_product.asp")
             Case "add"
-                Server.Execute("management.asp")
+                Server.Execute("managementProduct.asp")
+            Case "edit"
+                Server.Execute("editProduct.asp")
         End Select
 End Select
 %>

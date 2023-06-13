@@ -45,7 +45,7 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
-            <a href="?page=management"class="nav-link">Quản lý Sản Phẩm</a>
+            <a href="?page=managementProduct"class="nav-link">Quản lý Sản Phẩm</a>
           </li>
           <li class="nav-item">
             <a href="?page=cuong"class="nav-link">Quản lý Loại Sản Phẩm</a>

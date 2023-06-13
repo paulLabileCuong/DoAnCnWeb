@@ -1,4 +1,4 @@
 <%
-    Session.Contents.RemoveAll()
+    Session.Abandon
     Response.redirect("login.asp")
 %>  

@@ -8,6 +8,8 @@
         address = Request.Form("address")
         phone_number = Request.Form("phone_number")
         password = Request.Form("password")
+
+
         
         If (Not IsNull(fullname) Or Trim(fullname) <> "" Or Not IsNull(address) Or Trim(address) <> "" Or Not IsNull(email) Or Trim(email) <> "" Or Not IsNull(phone_number) Or Trim(phone_number) <> "" Or Not IsNull(password) Or Trim(password) <> "") Then
             Dim sql, result
@@ -54,8 +56,11 @@
 
                 <div class="col-md-6 right">
                     <form method="post" action="signup.asp">
+                      
+                
                         <div class="input-box">
                             <header>Đăng ký</header>
+
                             <div class="input-field">
                                 <input type="text" class="input" id="fullname" name="fullname" autocomplete="off">
                                 <label for="fullname">Họ và tên</label>

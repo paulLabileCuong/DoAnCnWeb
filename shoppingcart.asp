@@ -27,7 +27,7 @@
       statusViews = "d-block"
       statusButtons = "d-none"
       totalProduct=0
-    End If
+  End If
     Sub calSubtotal(rs)
   ' Do Something...
       subtotal = 0
@@ -59,6 +59,12 @@
 
   </head>
   <body>
+
+  <style>
+    .quantity{
+      min-width:50px;
+    }
+  </style>
   <section class="h-100 h-custom" style="background-color: #eee;">
     <div class="container py-2 h-100">
       <div class="row d-flex justify-content-center align-items-center h-100">
@@ -70,6 +76,8 @@
                   <div class="p-5">
                     <div class="d-flex justify-content-between align-items-center mb-5">
                       <h1 class="fw-bold mb-0 text-black">Shopping Cart</h1>
+  
+                    
                       <h6 class="mb-0 text-muted"><%= totalProduct %> <%call defineItems(totalProduct) %></h6>
                     </div>
                     <form action="removecart.asp" method=post>
@@ -99,8 +107,8 @@
                                       id  = CStr(rs("id"))
                                       Response.Write(mycarts.Item(id))                                     
                                       %>" type="number"
-                          class="form-control form-control-sm" />
-
+                        class="form-control form-control-sm quantity" />
+                        
                         <button class="btn btn-link px-2"
                           onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
                           <i class="fas fa-plus"></i>
@@ -116,7 +124,7 @@
                     </div>
 
                     <hr class="my-4">
-  <%
+                  <%
                   rs.MoveNext
                   loop
                   'phuc vu cho viec update subtotal

@@ -1,12 +1,4 @@
 <!--#include file="connect.asp"-->
-'  <%
-'     ' code here to retrive the data from product table
-'     Dim sqlString, rs
-'     sqlString = "Select * from DoAn"
-'     connDB.Open()
-'     set rs = connDB.execute(sqlString)    
-' %>
-
 
 <%
     'PHÂN TRANG
@@ -121,9 +113,9 @@
                         <div class="col-md-2 py-2"><i class="fa-solid fa-bars"></i></div>
                         <div class="col-md-10 py-2">
                         <%
-                            If (NOT isnull(Session("username"))) AND (TRIM(Session("username"))<>"") Then
+                            If (NOT isnull(Session("fullname"))) AND (TRIM(Session("fullname"))<>"") Then
                         %>   
-                           <a class="nav-link active" href="./user.asp?<%=Session("username")%>">
+                           <a class="nav-link active" href="./user.asp?<%=Session("fullname")%>">
                                 <strong>Tài khoản</strong>
                             </a>
                         <%                        
@@ -262,7 +254,7 @@
                             cmdPrep.ActiveConnection = connDB
                             cmdPrep.CommandType = 1
                             cmdPrep.Prepared = True
-                            cmdPrep.CommandText = "SELECT * FROM Product ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY"
+                            cmdPrep.CommandText = "SELECT * FROM Product  Where deleted = '0' ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY"
                             cmdPrep.parameters.Append cmdPrep.createParameter("offset",3,1, ,offset)
                             cmdPrep.parameters.Append cmdPrep.createParameter("limit",3,1, , limit)
                                 Set rs = cmdPrep.execute                          

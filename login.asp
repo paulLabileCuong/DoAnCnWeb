@@ -1,3 +1,5 @@
+ <%@LANGUAGE="VBSCRIPT" CODEPAGE="65001"%> 
+
 <!--#include file="connect.asp"-->
 <%
 If Request.ServerVariables("REQUEST_METHOD") = "POST" Then
@@ -27,7 +29,7 @@ If Request.ServerVariables("REQUEST_METHOD") = "POST" Then
                 Session("Success") = "Login Successfully"
                 
                 If Trim(Session("role_id")) = "1" Then
-                    Response.Redirect("admin/quanly/cuong1.asp")
+                    Response.Redirect("admin/quanly/admin.asp")
                 ElseIf Trim(Session("role_id")) = "2" Then
                     Response.Redirect("index.asp")
                 End If
