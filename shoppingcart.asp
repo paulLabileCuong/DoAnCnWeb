@@ -131,8 +131,7 @@
                   rs.MoveFirst
                   End If
                   %> 
-                  123213213213
-                
+                  
                     <div class="row pt-2">
                       <h6 class="mb-0 col-lg-10 pt-3"><a href="index.asp" class="text-body"><i
                             class="fas fa-long-arrow-alt-left me-2"></i>Back to shop</a></h6>
