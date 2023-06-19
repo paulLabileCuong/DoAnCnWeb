@@ -88,20 +88,11 @@
           <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Lê Kiên Cường</a>
+          <a href="#" class="d-block"><%=Session("fullname")%></a>
         </div>
       </div>
-
-      <!-- SidebarSearch Form -->
-      <div class="form-inline">
-        <div class="input-group" data-widget="sidebar-search">
-          <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
-          <div class="input-group-append">
-            <button class="btn btn-sidebar">
-              <i class="fas fa-search fa-fw"></i>
-            </button>
-          </div>
-        </div>
+      <div>
+        <a href="../../index.asp" class="btn btn-secondary">Trang chủ</a>
       </div>
 
       <!-- Sidebar Menu -->
@@ -113,13 +104,10 @@
             <a href="?page=managementProduct"class="nav-link">Quản lý Sản Phẩm</a>
           </li>
           <li class="nav-item">
-            <a href="?page=cuong"class="nav-link">Quản lý Loại Sản Phẩm</a>
+            <a href="?page=managementCategory"class="nav-link">Quản lý Loại Sản Phẩm</a>
           </li>
           <li class="nav-item">
-            <a href=""class="nav-link">Quản lý Khách Hàng</a>
-          </li>
-          <li class="nav-item">
-            <a href=""class="nav-link">Quản lý Hoá Đơn</a>
+            <a href="?page=managementOrder"class="nav-link">Quản lý Hoá Đơn</a>
           </li>
       </nav>
       <!-- /.sidebar-menu -->
@@ -137,7 +125,7 @@ End If
 
 Select Case page
     Case ""
-       Response.Write(Session("thumbnail"))
+       Response.Write(123213)
     Case "managementProduct"
         action = Request.QueryString("action")
         Select Case action
@@ -147,6 +135,22 @@ Select Case page
                 Server.Execute("managementProduct.asp")
             Case "edit"
                 Server.Execute("editProduct.asp")
+        End Select
+    Case "managementCategory"
+        action = Request.QueryString("action")
+        Select Case action
+            Case ""
+                Server.Execute("listofCategory.asp")
+            Case "add"
+                Server.Execute("addCategory.asp")
+            Case "edit"
+                Server.Execute("")
+        End Select
+    Case "managementOrder"
+        action = Request.QueryString("action")
+        Select Case action
+            Case ""
+                Server.Execute("listofOrder.asp")
         End Select
 End Select
 %>

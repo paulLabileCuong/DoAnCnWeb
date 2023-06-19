@@ -160,11 +160,6 @@
             <input type="text" class="form-control" id="price" name="price" required>
          </div>
 
-         <div class="mb-3">
-            <label for="discount" class="form-label">Discount:</label>
-            <input type="text" class="form-control" id="discount" name="discount">
-         </div>
-
          <label for="" class="form-label">Thumbnail:</label>
 		         <%
 		            Dim uploader
@@ -203,7 +198,12 @@
    category_id = Request.Form("category_id")
    title = Request.Form("title")
    price = Request.Form("price")
-   discount = Request.Form("discount")  
+       ' Validate price input
+    If Not IsNumeric(price) Then
+        Response.Write("<p>Error: Price must be a numeric value.</p>")
+        ' You can also redirect the user to a specific error page using Response.Redirect if needed.
+        Response.End
+    End If
     dim mvcfile
     Set mvcfile=uploader.GetUploadedFile(Request.Form("thumbnail")) 
     thumbnail =mvcfile.FileName
@@ -213,7 +213,7 @@
          cmdPrep.CommandType=1
          cmdPrep.Prepared=true
          dim sql
-         sql = "INSERT INTO Product(category_id, title, price, discount,thumbnail, deleted) VALUES (N'" & category_id & "','" & title & "','" & price & "','" & discount & "','" & thumbnail & "','0')"
+         sql = "INSERT INTO Product(category_id, title, price,thumbnail, deleted) VALUES (N'" & category_id & "','" & title & "','" & price & "','" & thumbnail & "','0')"
          cmdPrep.CommandText =sql
          cmdPrep.execute()
       Response.Redirect("admin.asp?page=managementProduct")

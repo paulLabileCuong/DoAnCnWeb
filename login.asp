@@ -52,9 +52,6 @@ If Request.ServerVariables("REQUEST_METHOD") = "POST" Then
 End If
 %>
 
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 

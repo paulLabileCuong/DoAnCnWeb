@@ -42,7 +42,6 @@ CREATE TABLE Product (
   category_id INT,
   title NVARCHAR(350),
   price INT,
-  discount INT,
   thumbnail NVARCHAR(500),
   FOREIGN KEY (category_id) REFERENCES Category(id)
 );
@@ -59,6 +58,7 @@ CREATE TABLE [Order] (
   address NVARCHAR(200),
   order_date DATETIME DEFAULT GETDATE(),
   status INT,
+  total_price INT,
   FOREIGN KEY (user_id) REFERENCES [User](id)
 );
 

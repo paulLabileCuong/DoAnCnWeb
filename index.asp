@@ -20,7 +20,7 @@
 ' trang hien tai
     page = Request.QueryString("page")
 '    Số bản ghi trong 1 trang
-    limit = 5
+    limit = 10
 
     if (trim(page) = "") or (isnull(page)) then
         page = 1
@@ -28,8 +28,17 @@
 
 '    Vị trí để lấy bản ghi ( từ vị trí nào đến vị trí nào)
     offset = (Clng(page) * Clng(limit)) - Clng(limit)
-
-    strSQL = "SELECT COUNT(id) AS count FROM Product"
+    dim a
+    a= Request.QueryString("danhmuc")
+    If a <> "" Then
+        if a = "all" then
+            strSQL = "SELECT COUNT(id) AS count FROM Product"
+        else
+            strSQL = "SELECT COUNT(id) AS count FROM Product WHERE Product.category_id IN (SELECT id FROM Category WHERE Category.name = '" & a & "')"
+        end if
+    ElseIf a = ""  Then
+        strSQL = "SELECT COUNT(id) AS count FROM Product"
+    End If
     'connDB.Open()
     Set CountResult = connDB.execute(strSQL)
 
@@ -56,25 +65,25 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        
 </head>
 <body>
     <section class="Header sticky-top" style="background-color: #e3f2fd;">
         <div class="container" >
             <div class="row">
                 <div class="col-md py-4">
-                    <a href="./home.asp">
-                        <img src="../assest/img/DHDs.png" class="img-fluid" alt="logo" style="height: 100px;">
+                    <a href="index.asp">
+                        <img src="assets/image/nz_toys__1__926b0eda4b2246d6bbdc.webp" class="img-fluid" alt="logo" style="height: 100px;">
                     </a>
                 </div>
                 <div class="col-md-4 py-5">
-                    <form action="./searchProduct.asp" method="post" accept-charset="UTF-8">
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Tìm kiếm sản phẩm"  aria-describedby="basic-addon1" name="TenSP" value="<%=TenSP%>">
-                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-                        </div>
-                    </form>
+                <form method="GET" action="index.asp">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" name="search" placeholder="Tìm kiếm sản phẩm">
+                            <button class="btn btn-primary" type="submit" ><i class="fa-solid fa-magnifying-glass"></i></button>
+                    </div>
+                </form>
                 </div>
-            
                 <div class="col-md py-5">
                     <button type="button" class="btn btn-outline-success ">
                         <a class="nav-link active" href="./shoppingcart.asp">
@@ -91,46 +100,39 @@
                 </div>
                 
                 <div class="col">
-                    <div class="row py-5">
-                        <div class="col-md-2 py-2"><i class="fa-solid fa-right-from-bracket"></i></div>
-                        <div class="col-md-10 py-2">
+                <div class="row py-5">
+                    <div class="col-md-2 py-2"></div>
+                    <div class="col-md-10 py-2">
                         <%
-                            If (NOT isnull(Session("fullname"))) AND (TRIM(Session("fullname"))<>"") Then
-                        %>   
-                           <a class="nav-link active" href="../logout.asp"><strong>Đăng xuất</strong></a>
-                        <%                        
-                            Else
-                        %>                
-                            <a class="nav-link active" href="../login.asp"><strong>Đăng nhập</strong></a>
-                        <%
-                            End If
-                        %>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="row py-5">
-                        <div class="col-md-2 py-2"><i class="fa-solid fa-bars"></i></div>
-                        <div class="col-md-10 py-2">
-                        <%
-                            If (NOT isnull(Session("fullname"))) AND (TRIM(Session("fullname"))<>"") Then
-                        %>   
-                           <a class="nav-link active" href="./user.asp?<%=Session("fullname")%>">
-                                <strong>Tài khoản</strong>
+                           if (NOT isnull(Session("fullname"))) AND (TRIM(Session("fullname"))<>"") Then
+                        %> 
+                        <div class="dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" id="menuDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-bars"></i><strong>Tài khoản</strong>
                             </a>
-                        <%                        
-                            Else
-                            Session("Error")="Bạn chưa đăng nhập"
-                        %>                
-                            <a class="nav-link active" href="./index.asp"><strong>Tài khoản</strong></a>
-                            
-                        <%
-                            End If
-                        %>  
-                            
+                            <ul class="dropdown-menu" aria-labelledby="menuDropdown">
+                            <% 
+                                if Session("role_id") = 1 then
+                            %>
+                                <li><a class="dropdown-item" href="admin/quanly/admin.asp">Quản trị</a></li>
+                            <%
+                                end if
+                            %>
+                                <li><a class="dropdown-item" href="logout.asp">Đăng xuất</a></li>
+                                <li><a class="dropdown-item" href="./user.asp">Tài khoản</a></li>
+                                <li><a class="dropdown-item" href="./orders.asp">Đơn hàng</a></li>
+                            </ul>
                         </div>
+                        <%    
+                        else
+                     %>
+                            <a class="btn btn-primary" href="login.asp">Đăng nhập</a>
+                        <%                        
+                            End If 
+                        %>   
                     </div>
                 </div>
+                </div>              
             </div>
         </div>
     </section>
@@ -142,7 +144,7 @@
                 <%=Session("Success")%>
             </div>
     <%
-            Session.Contents.Remove("Success")
+        Session.Contents.Remove("Success")
         End If
     %>
     <%
@@ -160,16 +162,7 @@
     <section style="background-color: #eee;">    
         <div class="container py-3">
         <div class="grid">
-             <!--   <section id="Slider">
-                    <div class="aspect-radio-169">
-                        <img src="../assest/img/in-banner-quang-cao-do-an-2.jpg" alt="">
-                        <img src="../assest/img/in-banner-quang-cao-do-an-7-1.jpg" alt="">
-                    </div>
-                    <div class="dot-container">
-                        <div class="dot active"></div>
-                        <div class="dot"></div>
-                    </div>
-                </section> -->
+        <h3 style="text-align: center;">Danh sách sản phẩm </h3>
                 <div class="grid__row app__content">
                     <div class="grid__column-2">
                         <nav class="category">
@@ -179,73 +172,32 @@
                             </div>
                             DANH MỤC
                         </h3>
-                        
+                        <% 
+                            Set cuong = Server.CreateObject("ADODB.Command")
+                            cuong.ActiveConnection = connDB
+                            cuong.CommandType = 1
+                            cuong.CommandText = "SELECT name FROM Category"
+                            Set rs1 = cuong.execute                          
+                            do while not rs1.EOF
+                        %>
                         <ul class="category-list">
                             <li class="category-item">
-                                <a href="#" class="category-item__link">COMBO 1 NGƯỜI</a>
-                            </li>
-                            <li class="category-item">
-                                <a href="#" class="category-item__link">COMBO NHÓM</a>
-                            </li>
-                            <li class="category-item category-item--active">
-                                <a href="#" class="category-item__link">GÀ RÁN - GÀ QUAY</a>
-                            </li>
-                            <li class="category-item">
-                                <a href="#" class="category-item__link">BURGER - CƠM - MÌ Ý</a>
-                            </li>
-                            <li class="category-item">
-                                <a href="#" class="category-item__link">THỨC ĂN NHẸ</a>
-                            </li>
-                            <li class="category-item">
-                                <a href="#" class="category-item__link">THỨC UỐNG & TRÁNG MIỆNG</a>
+                                <a href="index.asp?danhmuc=<%=rs1("name")%>" class="category-item__link">-<%=rs1("name")%></a>
                             </li>
                         </ul>
+                        <%
+                            rs1.MoveNext
+                            loop
+                            rs1.Close()
+                        %>
+                        <ul class="category-list">
+                            <li class="category-item">
+                                <a href="?danhmuc=all" class="category-item__link">-Tất cả</a>
+                            </li>
+                        </ul>                            
                     </nav>
-                </div>
-                
+                </div>                
                 <div class="grid__column-10">
-                    <div class="home-filter">
-                        <span class="home-filter__label">Sắp xếp theo</span>
-                        <button class="home-filter__btn btn btn-light">Phổ biến</button>
-                        <button class="home-filter__btn btn btn-danger">Mới nhất</button>
-                        <button class="home-filter__btn btn btn-light">Bán chạy</button>
-                        
-                        <div class="select-input">
-                            <span class="select-input__label">Giá</span>
-                            
-                            <div class="select-input__icon">
-                                <i class="fa fa-angle-down"></i>
-                            </div>
-                            
-                            <ul class="select-input__list">
-                                <li class="select-input__item">
-                                    <a href="" class="select-input__link">Giá: Thấp đến cao</a>
-                                </li>
-                                <li class="select-input__item">
-                                    <a href="" class="select-input__link">Giá: Cao đến thấp</a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="home-filter__page">
-                            <span class="home-filter__page-num">
-                                <span class="home-filter__page-current">1</span>/14
-                            </span>
-                            
-                            <div class="home-filter__page-control">
-                                <a href="" class="home-filter__page-btn home-filter__page-btn--disabled">
-                                    <div class="home-filter__page-icon">
-                                        <i class="fa fa-angle-left"></i>
-                                    </div>
-                                </a>
-                                <a href="" class="home-filter__page-btn">
-                                    <div class="home-filter__page-icon">
-                                        <i class="fa fa-angle-right"></i>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    
                     <div class="home-product">
                         <div class="grid__row">
                             <!-- Product item -->
@@ -254,12 +206,30 @@
                             cmdPrep.ActiveConnection = connDB
                             cmdPrep.CommandType = 1
                             cmdPrep.Prepared = True
-                            cmdPrep.CommandText = "SELECT * FROM Product  Where deleted = '0' ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY"
-                            cmdPrep.parameters.Append cmdPrep.createParameter("offset",3,1, ,offset)
-                            cmdPrep.parameters.Append cmdPrep.createParameter("limit",3,1, , limit)
+                            Dim danhmuc
+                            danhmuc = Request.QueryString("danhmuc")
+                            Dim search
+                            search = Request.QueryString("search")
+                            If danhmuc <> "" Then
+                                if danhmuc = "all" then
+                                    cmdPrep.CommandText = "SELECT * FROM Product  Where deleted = '0' ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY"
+
+                                else
+                                    cmdPrep.CommandText = "SELECT Category.name, Product.* FROM Product INNER JOIN Category ON Product.category_id = Category.id where Category.name like '%" & danhmuc & "%' ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY"
+                         
+                                end if                           
+                            ElseIf search <> "" Then
+                                cmdPrep.CommandText = "SELECT * FROM Product  Where deleted = '0' AND title LIKE '%" & search & "%' ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY"
+
+                            Else
+                                cmdPrep.CommandText = "SELECT * FROM Product  Where deleted = '0' ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY"
+
+                            End If
+                                cmdPrep.parameters.Append cmdPrep.createParameter("offset",3,1, ,offset)
+                                cmdPrep.parameters.Append cmdPrep.createParameter("limit",3,1, , limit)
                                 Set rs = cmdPrep.execute                          
                                 do while not rs.EOF
-                                %>
+                            %>
                                 <div class="grid__column-2-4">
                                     
                                 <a class="home-product-item" href="#">
@@ -275,10 +245,10 @@
                                         <span class="home-product-item__price-current">
                                         Giá:
                                             <%
-                                                = rs("price")
-                                            %>    
-                                            </span>
-                                        </div>
+                                                =  FormatNumber(rs("price"), 2)
+                                            %> VND    
+                                        </span>
+                                    </div>
                                     <div class="d-flex flex-column" style="background-color: var(--white-color)">   
                                         
                                         <a class="btn btn-outline-success" href="addCart.asp?idproduct=<%= rs("id")%>">
@@ -291,45 +261,91 @@
                             <%
                             rs.MoveNext
                             loop
-                            rs.Close()
-                            connDB.Close()
                             %>     
                         </div>
-                    </div>
+                    <%
+                        dim cuong
+                        cuong= Request.QueryString("danhmuc")
+                        if (cuong <> "") then
+                    %>
                     <nav aria-label="Page Navigation">
                         <ul class="pagination pagination-sm justify-content-center my-5">
-                            <% if (pages>1) then
-                            'kiem tra trang hien tai co >=2
-                            if(Clng(page)>=2) then
-                            %>
-                            <li class="page-item"><a class="page-link" href="index.asp?page=<%=Clng(page)-1%>">Trước</a></li>
-                            <%    
-                            end if 
-                            for i= 1 to pages
-                            %>
-                            <li class="page-item <%=checkPage(Clng(i)=Clng(page),"active")%>"><a class="page-link" href="index.asp?page=<%=i%>"><%=i%></a></li>
                             <% 
-                            next
-                            if (Clng(page)<pages) then
-                            
+                                if (pages>1) then
+                                'kiem tra trang hien tai co >=2
+                                if(Clng(page)>=2) then
+                            %>
+                                <li class="page-item"><a class="page-link" href="index.asp?danhmuc=<%=cuong%>&page=<%=Clng(page)-1%>">Trước</a></li>
+                            <%    
+                                end if 
+                                for i= 1 to pages
+                            %>
+                                <li class="page-item <%=checkPage(Clng(i)=Clng(page),"active")%>"><a class="page-link" href="index.asp?danhmuc=<%=cuong%>&page=<%=i%>"><%=i%></a></li>
+                            <% 
+                                next
+                                if (Clng(page)<pages) then
+                            %>
+                            <li class="page-item"><a class="page-link" href="index.asp?danhmuc=<%=cuong%>&page=<%=Clng(page)+1%>">Sau</a></li>
+                            <%
+                                end if    
+                                end if
+                            %>                           
+                        </ul>
+                    </nav>
+                    <%
+                        else
+                    %>
+                    <nav aria-label="Page Navigation">
+                        <ul class="pagination pagination-sm justify-content-center my-5">
+                            <% 
+                                if (pages>1) then
+                                'kiem tra trang hien tai co >=2
+                                if(Clng(page)>=2) then
+                            %>
+                                <li class="page-item"><a class="page-link" href="index.asp?page=<%=Clng(page)-1%>">Trước</a></li>
+                            <%    
+                                end if 
+                                for i= 1 to pages
+                            %>
+                                <li class="page-item <%=checkPage(Clng(i)=Clng(page),"active")%>"><a class="page-link" href="index.asp?page=<%=i%>"><%=i%></a></li>
+                            <% 
+                                next
+                                if (Clng(page)<pages) then
                             %>
                             <li class="page-item"><a class="page-link" href="index.asp?page=<%=Clng(page)+1%>">Sau</a></li>
                             <%
-                            end if    
-                            end if
- 
-                        %>                           
+                                end if    
+                                end if
+                            %>                           
                         </ul>
                     </nav>
+                    <%
+                        end if
+                    %>
+                    </div>
                 </div>
             </div>
         </div>   
 
         </div>
     </section>
-
+<!--#include file="components/footer.asp"-->
 </body>
-<script language="javascript" src="../assest/js/slider.js">
-    
+<script 
+    language="javascript" src="../assest/js/slider.js">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    setTimeout(function() {
+        // Remove the session message from the DOM after 2 seconds
+        var successAlert = document.querySelector(".alert-success");
+        var errorAlert = document.querySelector(".alert-danger");
+        if (successAlert) {
+            successAlert.remove();
+        }
+        if (errorAlert) {
+            errorAlert.remove();
+        }
+    }, 2000); // 2 seconds
 </script>
 </html>

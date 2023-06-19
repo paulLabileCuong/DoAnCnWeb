@@ -139,7 +139,7 @@
 </head>
 <body>
    <div class="container">
-      <h1>Add Product</h1>
+      <h1>Sửa sản phẩm</h1>
 
       <form method="POST" >
          <div class="mb-3">
@@ -158,13 +158,6 @@
          <div class="mb-3">
             <label for="price" class="form-label">Price:</label>
             <input type="text" class="form-control" id="price" name="price" required>
-         </div>
-
-         <div class="mb-3">
-            <select name ="status" class="custom-select" >
-				<option value="0">Được bán</option>
-				<option value="1">Xoá</option>
-            </select>
          </div>
 
          <label for="" class="form-label">Thumbnail:</label>

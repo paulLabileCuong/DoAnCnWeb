@@ -8,7 +8,32 @@
         address = Request.Form("address")
         phone_number = Request.Form("phone_number")
         password = Request.Form("password")
+    ' Validate required fields
+    If Trim(fullname) = "" Or Trim(email) = "" Or Trim(address) = "" Or Trim(phone_number) = "" Or Trim(password) = "" Then
+        ' Handle validation error, e.g., display error message or redirect to an error page
+        Response.Write("<p>Error: All fields are required.</p>")
+        Response.End
+    End If
 
+    ' Validate email format
+    Dim emailRegex
+    Set emailRegex = New RegExp
+    emailRegex.Pattern = "^[\w\.-]+@[\w\.-]+\.\w{2,4}$"
+    If Not emailRegex.Test(email) Then
+        ' Handle validation error for invalid email format
+        Response.Write("<p>Error: Invalid email format.</p>")
+        Response.End
+    End If
+
+    ' Validate phone number format
+    Dim phoneRegex
+    Set phoneRegex = New RegExp
+    phoneRegex.Pattern = "^\d{10}$" ' Assuming a 10-digit phone number format
+    If Not phoneRegex.Test(phone_number) Then
+        ' Handle validation error for invalid phone number format
+        Response.Write("<p>Error: Invalid phone number format.</p>")
+        Response.End
+    End If
 
         
         If (Not IsNull(fullname) Or Trim(fullname) <> "" Or Not IsNull(address) Or Trim(address) <> "" Or Not IsNull(email) Or Trim(email) <> "" Or Not IsNull(phone_number) Or Trim(phone_number) <> "" Or Not IsNull(password) Or Trim(password) <> "") Then

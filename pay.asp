@@ -158,11 +158,13 @@
                         cmdPrep.CommandText = "Insert into [OrderDetail] (order_id,product_id,price,num) values (' "& order_id & "',' "& product_id & "','" & price &"','"& num&"')"
                         cmdPrep.execute
                     Next
-                    Session("Success") = "New employee added!"
-                  Session("Success") = "Thanh toán thành công, Hóa đơn đã được tạo"
-                  Session("payment_completed") = True
-                  ' Session("mycarts").Abandon
-                  ' Response.Redirect("index.asp")
+                    Session("Success") = "Thanh toán thành công, Hóa đơn đã được tạo code: " & order_id & ""
+                    Session("price") = subtotal
+                    Session("ten") = Name
+                    Session("address") = Address
+
+                    Session("payment_completed") = True
+                    Response.Redirect("confirm.asp")
                 End If
               End If
             %>
@@ -191,7 +193,7 @@
                           </div>
                           <div class="col">
                             <label for="phone" class="mb-1"><b>Số điện thoại nhận hàng</b></label>
-                            <input type="text" class="form-control" id="phone" name="phone" value="<% =rs("phone_number")%>">
+                            <input type="text" class="form-control" id="phone_number" name="phone_number" value="<% =rs("phone_number")%>">
                           </div>
                         </div>
                       </div>

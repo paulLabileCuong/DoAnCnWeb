@@ -81,6 +81,13 @@
     <title>Document</title>
 </head>
 <body>
+    <h1>Quản lý sản phẩm</h1>
+    <form method="GET" action="table_of_product.asp">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" name="search" placeholder="Search for products">
+            <button class="btn btn-primary" type="submit">Search</button>
+        </div>
+    </form>
     <table class="table">
         <a href="?page=managementProduct&action=add" class="btn btn-primary">ADD PRODUCT</a>
        <thead>
@@ -96,14 +103,23 @@
        </thead>
        <tbody>
           <%
-             Set cmdPrep = Server.CreateObject("ADODB.Command")
-             cmdPrep.ActiveConnection = connDB
-             cmdPrep.CommandType = 1
-             cmdPrep.Prepared = True
-             cmdPrep.CommandText = "SELECT Category.name, Product.* FROM Product INNER JOIN Category ON Product.category_id = Category.id ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY"
-             cmdPrep.parameters.Append cmdPrep.createParameter("offset",3,1, ,offset)
-             cmdPrep.parameters.Append cmdPrep.createParameter("limit",3,1, , limit)
-             Set rs = cmdPrep.execute                          
+            Set cmdPrep = Server.CreateObject("ADODB.Command")
+            cmdPrep.ActiveConnection = connDB
+            cmdPrep.CommandType = 1
+            cmdPrep.Prepared = True
+            Dim search
+            search = Request.QueryString("search")
+            If search = "" Then
+              cmdPrep.CommandText = "SELECT Category.name, Product.* FROM Product INNER JOIN Category ON Product.category_id = Category.id ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY"
+              cmdPrep.parameters.Append cmdPrep.createParameter("offset",3,1, ,offset)
+              cmdPrep.parameters.Append cmdPrep.createParameter("limit",3,1, , limit)
+              Set rs = cmdPrep.execute 
+            Else
+              cmdPrep.CommandText = "SELECT Category.name, Product.* FROM Product INNER JOIN Category ON Product.category_id = Category.id WHERE Product.title LIKE '%" & search & "%' ORDER BY Product.id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY"
+              cmdPrep.parameters.Append cmdPrep.createParameter("offset",3,1, ,offset)
+              cmdPrep.parameters.Append cmdPrep.createParameter("limit",3,1, , limit)
+              Set rs = cmdPrep.execute   
+             End If                       
              do while not rs.EOF
            %>
          <tr>
@@ -112,16 +128,15 @@
            <td><%= rs("name")%></td>
            <td><%= rs("title")%></td>
            <td><%= FormatNumber(rs("price"), 2) %> VND</td>
-           <td class="<% If rs("deleted") = 0 Then %>in-stock<% Else %>out-of-stock<% End If %>">
+           <td>
               <% If rs("deleted") = 0 Then %>
-                Được bán
+                <a href="changeStatusProduct.asp?id=<%=rs("id")%>" class="btn btn-success"title="Delete">Được bán</a>
               <% Else %>
-                Đã bị xoá
+                <a href="changeStatusProduct.asp?id=<%=rs("id")%>" class="btn btn-danger"title="Delete">Đã xoá</a>
               <% End If %>
-            </td>
+          </td>
            <td>
              <a href="?page=managementProduct&action=edit&id=<%=rs("id")%>" class="btn btn-primary">Sửa</a>
-             <a href="deleteProduct.asp?id=<%=rs("id")%>" class="btn btn-danger"title="Delete">Xoá</a>
            </td>
          </tr>
          <%
@@ -153,24 +168,6 @@
          %>                           
        </ul>
      </nav>
-                 <div class="modal" tabindex="-1" id="confirm-delete">
-                     <div class="modal-dialog">
-                         <div class="modal-content">
-                             <div class="modal-header">
-                                 <h5 class="modal-title">Delete Confirmation</h5>
-                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                             </div>
-                             <div class="modal-body">
-                                 <p>Are you sure?</p>
-                             </div>
-                             <div class="modal-footer">
-                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                 <a class="btn btn-danger btn-delete">Delete</a>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-             </div>
 </body>
 </html>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" 
